@@ -6,8 +6,8 @@ import json
 # https://hh.ru/search/vacancy?text=data+science&from=suggest_post&salary=&clusters=true&ored_clusters=true&search_field=name&enable_snippets=true&page=0&items_on_page=20&hhtmFrom=vacancy_search_list
 
 main_url = "https://hh.ru"
-# vacancy = input('Input your vacancy name: ')
-vacancy = 'data science'
+vacancy = input('Input your vacancy name: ')
+# vacancy = 'data science'
 page = 0
 all_vacancies = []
 params = {'text': vacancy,
@@ -32,7 +32,7 @@ except:
     last_page = 1
 
 for i in range(last_page):
-
+    soup = bs(response.content, 'html.parser')
     vacancies = soup.find_all('div', {'class': 'vacancy-serp-item__layout'})
 
     for vacancy in vacancies:
@@ -71,16 +71,17 @@ for i in range(last_page):
         }
         all_vacancies.append(vacancies_dict)
     # print(len(all_vacancies))
-    page += 1
-    # params['page'] = page + 1
+    params['page'] += 1
+    response = requests.get(url=url, params=params, headers=headers)
 
-# pprint(all_vacancies)
+pprint(all_vacancies[0])
+print(len(all_vacancies))
 
 with open('hh_vacancies.json', 'w', encoding='utf-8') as f:
-    json.dump(all_vacancies, f)
-
-with open('hh_vacancies.json', 'r') as f:
-    j_data = json.load(f)
-
-pprint(j_data)
-print(len(all_vacancies))
+    json.dump(all_vacancies, f, ensure_ascii=False)
+#
+# with open('hh_vacancies.json', 'r') as f:
+#     j_data = json.load(f)
+#
+# pprint(j_data)
+# print(len(all_vacancies))
